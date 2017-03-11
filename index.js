@@ -10,16 +10,16 @@ const Product = require('./models/product')
 
 
 
-
-
-
 mongoose.connect('mongodb://localhost:27017/shop2')
 	let db = mongoose.connection
 
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 
+app.get('/', (req, res) => {
+	res.sendfile('index.html')
+})
 
 
 
@@ -31,8 +31,8 @@ app.get('/api/product', (req, res) => {
 		if (err) return res.status(500).send(`Hubo un error al realizar la petición ${err}`)
 			if (!products) return res.status(404).send('Producto no encontrado')
 					res.status(200).json({products})
+		console.log('consulta exitosa general')
 	})
-
 })
 
 
@@ -42,13 +42,31 @@ app.get('/api/product/:productId', (req, res) => {
 	let productId = req.params.productId
 
 	Product.findById(productId, (err, product) => {
-		if (err) res.status(500).send(`:( Hubo un error al realizar la petición ${err}`)
+		if (err) return res.status(500).send(`:( Hubo un error al realizar la petición ${err}`)
 			if (!product) return res.status(404).send('El producto no existe')
 				res.status(200).json({product})
+		console.log('consulta exitosa específica')
 	})
 })
 
 
+
+app.post('/api/product/', (req, res) => {
+
+	let product = new Product({
+		name : req.body.name,
+		picture : req.body.picture,
+		price : req.body.price,
+		category : req.body.category,
+		description : req.body.description
+	})
+		
+		product.save((err, productStored) => {
+			if (err) return res.status(500).send(`:( Hubo un error al guardar el producto ${err}`)
+				res.status(200).json({productStored})
+			console.log('Producto guardado exitosamente')
+		})
+})
 
 
 
