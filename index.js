@@ -75,7 +75,7 @@ app.put('/api/product/:productId', (req, res) => {
 
 	Product.findByIdAndUpdate(productId, update, (err, productUdated) => {
 		if (err) return res.status(500).send(`Hubo un error actualizando el elemento ${err}`)
-			res.status(200).send({productUdated})
+			res.status(200).json({productUdated})
 		console.log('Elemento actualizado exitosamente')
 	})
 })
