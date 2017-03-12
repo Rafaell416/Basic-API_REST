@@ -17,12 +17,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 
+
+
 app.get('/', (req, res) => {
 	res.sendfile('index.html')
 })
-
-
-
 
 
 app.get('/api/product', (req, res) => {
@@ -31,7 +30,7 @@ app.get('/api/product', (req, res) => {
 		if (err) return res.status(500).send(`Hubo un error al realizar la petición ${err}`)
 			if (!products) return res.status(404).send('Producto no encontrado')
 					res.status(200).json({products})
-		console.log('consulta exitosa general')
+		console.log('consulta general exitosa ')
 	})
 })
 
@@ -53,13 +52,13 @@ app.get('/api/product/:productId', (req, res) => {
 
 app.post('/api/product/', (req, res) => {
 
-	let product = new Product({
-		name : req.body.name,
-		picture : req.body.picture,
-		price : req.body.price,
-		category : req.body.category,
-		description : req.body.description
-	})
+	let product = new Product()
+		product.name = req.body.name
+		product.picture = req.body.picture
+		product.price = req.body.price
+		product.category = req.body.category
+		product.description = req.body.description
+	
 		
 		product.save((err, productStored) => {
 			if (err) return res.status(500).send(`:( Hubo un error al guardar el producto ${err}`)
@@ -67,6 +66,22 @@ app.post('/api/product/', (req, res) => {
 			console.log('Producto guardado exitosamente')
 		})
 })
+
+
+
+app.put('/api/product/:productId', (req, res) => {
+	let productId = req.params.productId
+	let update = req.body
+
+	Product.findByIdAndUpdate(productId, update, (err, productUdated) => {
+		if (err) return res.status(500).send(`Hubo un error actualizando el elemento ${err}`)
+			res.status(200).send({productUdated})
+		console.log('Elemento actualizado exitosamente')
+	})
+})
+
+
+
 
 
 
