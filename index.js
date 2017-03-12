@@ -19,6 +19,10 @@ app.use(bodyParser.json())
 
 
 
+
+
+
+
 app.get('/', (req, res) => {
 	res.sendfile('index.html')
 })
@@ -82,7 +86,32 @@ app.put('/api/product/:productId', (req, res) => {
 
 
 
+app.delete('/api/product/', (req, res) => {
 
+	Product.remove({}, (err) => {
+		if (err) return res.status(500).send(`Hubon un erro borrando los elementos ${err}`)
+			res.status(200).send('Productos borrados exitosamente')
+		console.log('Productos borrados exitosamente')
+	})
+})
+
+
+
+
+
+app.delete('/api/product/:productId', (req, res) => {
+	let productId = req.params.productId
+
+	Product.findById(productId, (err, product) => {
+		if (err) res.status(500).send(`Hubo un error al encontrar el producto ${err}`)
+
+			product.remove(err => {
+				if (err) return res.status(500).send(`Hubo un error al borrar el producto ${err}`)
+					res.status(200).send('Producto borrado exitosamente')
+				console.log('Producto borrado exitosa')
+			})
+	})
+})
 
 
 
